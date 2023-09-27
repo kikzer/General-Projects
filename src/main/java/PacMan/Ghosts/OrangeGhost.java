@@ -9,39 +9,38 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class OrangeGhost extends Ghost {
 
-    private int x, y, state;
-    private boolean eaten;
+    private int x, y;
     int positionX;
     int positionY;
-    int xPosi;
-    int yPosi;
+    int ghostPositionX;
+    int ghostPositionY;
 
 
     public OrangeGhost(final int x, final int y, final PacEngine engine) {
         super(x, y, engine);
         this.x = x;
         this.y = y;
-        xPosi = 4;
-        yPosi = getEngine().getField().getMap().length - 4;
-        setPositionX(getxPosi());
-        setPositionY(getyPosi());
+        ghostPositionX = 4;
+        ghostPositionY = getEngine().getField().getMap().length - 4;
+        setPositionX(getGhostPositionX());
+        setPositionY(getGhostPositionY());
 
     }
 
-    public int getxPosi() {
-        return xPosi;
+    public int getGhostPositionX() {
+        return ghostPositionX;
     }
 
-    public void setxPosi(int xPosi) {
-        this.xPosi = xPosi;
+    public void setGhostPositionX(int ghostPositionX) {
+        this.ghostPositionX = ghostPositionX;
     }
 
-    public int getyPosi() {
-        return yPosi;
+    public int getGhostPositionY() {
+        return ghostPositionY;
     }
 
-    public void setyPosi(int yPosi) {
-        this.yPosi = yPosi;
+    public void setGhostPositionY(int ghostPositionY) {
+        this.ghostPositionY = ghostPositionY;
     }
 
     public int getPositionX() {
@@ -76,22 +75,6 @@ public class OrangeGhost extends Ghost {
         this.y = y;
     }
 
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public boolean isEaten() {
-        return eaten;
-    }
-
-    public void setEaten(boolean eaten) {
-        this.eaten = eaten;
-    }
-
     public int getWidth() {
         return Player.WIDTH;
     }
@@ -101,7 +84,7 @@ public class OrangeGhost extends Ghost {
     }
 
     public int getRadius() {
-        return 300;
+        return 306;
     }
 
     public void draw(Graphics g) {
@@ -109,30 +92,32 @@ public class OrangeGhost extends Ghost {
         super.draw(g);
     }
 
+
     /**
      * when the ghost reached the destination, it gets a new random destination
      */
     private void setNewPosition() {
         if (!getaStar().getNodes()[getPositionX()][getPositionY()].isBlocked()) {
-            setxPosi(getPositionX());
-            setyPosi(getPositionY());
-            getaStar().setNodes(getX(), getY(), getxPosi() * Player.WIDTH, getyPosi() * Player.HEIGHT);
+            setGhostPositionX(getPositionX());
+            setGhostPositionY(getPositionY());
+            getaStar().setNodes(getX(), getY(), getGhostPositionX() * Player.WIDTH, getGhostPositionY() * Player.HEIGHT);
         } else {
             setPositionX(ThreadLocalRandom.current().nextInt(2, getEngine().getField().getMap().length / 2));
             setPositionY(ThreadLocalRandom.current().nextInt((getEngine().getField().getMap().length / 2) + 3, (getEngine().getField().getMap().length - 3)));
         }
     }
+
     /**
      * checks if pac man is in the range of the ghost and so changes the behavior
      */
+    @Override
     public void update() {
-        if ((getEngine().getPacman().getDistance(getX() + getWidth() / 2, getY() + getHeight() / 2) <
-                getDestination(getX(),getY(),(int) (getX() - getRadius() * 0.475), (int) (getY() - getRadius() * 0.475))) && isWeak()) {
+        if (inRange(getRadius())) {
             getaStar().setNodes(getX(), getY(), getEngine().getPacman().getX(), getEngine().getPacman().getY());
         } else {
             setNewPosition();
         }
-        if (getX() == getxPosi() * Player.WIDTH && getY() == getyPosi() * Player.HEIGHT) {
+        if (getX() == getGhostPositionX() * Player.WIDTH && getY() == getGhostPositionY() * Player.HEIGHT) {
             setNewPosition();
         }
     }

@@ -11,24 +11,16 @@ public class Player extends Body {
     private int x, y, life;
     public static final int WIDTH = 25;
     public static final int HEIGHT = 25;
-    private boolean left = true;
+    private boolean left = false;
     private boolean right = false;
     private boolean up = false;
     private boolean down = false;
-    private int stepcounter = 0;
+    private int stepCounter = 0;
 
     public Player(final int x, final int y, final int life) {
         this.x = x;
         this.y = y;
         this.life = life;
-    }
-
-    public int getStepcounter() {
-        return stepcounter;
-    }
-
-    public void setStepcounter(int stepcounter) {
-        this.stepcounter = stepcounter;
     }
 
     public int getX() {
@@ -99,6 +91,32 @@ public class Player extends Body {
         g.setColor(Color.yellow);
         g.fillRect(getX(), getY(), WIDTH, HEIGHT);
     }
+
+    public void goLeft(){
+        setDown(false);
+        setUp(false);
+        setRight(false);
+        setLeft(true);
+    }
+    public void goRight(){
+        setDown(false);
+        setUp(false);
+        setRight(true);
+        setLeft(false);
+    }
+    public void goUp(){
+        setDown(false);
+        setUp(true);
+        setRight(false);
+        setLeft(false);
+    }
+    public void goDown(){
+        setDown(true);
+        setUp(false);
+        setRight(false);
+        setLeft(false);
+    }
+
 
     public int getSpeed() {
         return WIDTH;

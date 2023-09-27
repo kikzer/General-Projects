@@ -9,17 +9,16 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BlueGhost extends Ghost {
 
-    private int x, y, state, xPosi, yPosi, positionX, positionY;
-    private boolean eaten;
+    private int x, y, escapePositionX, escapePositionY, positionX, positionY;
 
     public BlueGhost(final int x, final int y, final PacEngine engine) {
         super(x, y, engine);
         this.x = x;
         this.y = y;
-        xPosi = getEngine().getField().getMap().length - 4;
-        yPosi = getEngine().getField().getMap().length - 4;
-        setPositionX(getxPosi());
-        setPositionY(getyPosi());
+        escapePositionX = getEngine().getField().getMap().length - 4;
+        escapePositionY = 5;
+        setPositionX(getEscapePositionX());
+        setPositionY(getEscapePositionY());
     }
 
     @Override
@@ -31,14 +30,14 @@ public class BlueGhost extends Ghost {
     /**
      * checks if pac man is in the range of the ghost and so changes the behavior
      */
+    @Override
     public void update() {
-        if ((getEngine().getPacman().getDistance(getX() + getWidth() / 2, getY() + getHeight() / 2) <
-                getDestination(getX(),getY(),(int) (getX() - getRadius() * 0.475), (int) (getY() - getRadius() * 0.475))-150 ) && isWeak()) {
-            getaStar().setNodes(getX(), getY(), getEngine().getPacman().getX(), getEngine().getPacman().getY() );
-        }else {
+        if (inRange(getRadius())) {
+            getaStar().setNodes(getX(), getY(), getEngine().getPacman().getX(), getEngine().getPacman().getY());
+        } else {
             setNewPosition();
         }
-        if(getX() == getxPosi()* Player.WIDTH && getY() == getyPosi()*Player.HEIGHT ){
+        if (getX() == getEscapePositionX() * Player.WIDTH && getY() == getEscapePositionY() * Player.HEIGHT) {
             setNewPosition();
         }
 
@@ -53,29 +52,29 @@ public class BlueGhost extends Ghost {
      */
     private void setNewPosition() {
         if (!getaStar().getNodes()[getPositionX()][getPositionY()].isBlocked()) {
-            setxPosi(getPositionX());
-            setyPosi(getPositionY());
-            getaStar().setNodes(getX(), getY(), getxPosi()*Player.WIDTH,getyPosi()*Player.HEIGHT);
+            setEscapePositionX(getPositionX());
+            setEscapePositionY(getPositionY());
+            getaStar().setNodes(getX(), getY(), getEscapePositionX() * Player.WIDTH, getEscapePositionY() * Player.HEIGHT);
         } else {
             setPositionX(ThreadLocalRandom.current().nextInt(getEngine().getField().getMap().length / 2, getEngine().getField().getMap().length - 2));
-            setPositionY(ThreadLocalRandom.current().nextInt(2, (getEngine().getField().getMap().length / 2)-3));
+            setPositionY(ThreadLocalRandom.current().nextInt(2, (getEngine().getField().getMap().length / 2) - 3));
         }
     }
 
-    public int getxPosi() {
-        return xPosi;
+    public int getEscapePositionX() {
+        return escapePositionX;
     }
 
-    public void setxPosi(int xPosi) {
-        this.xPosi = xPosi;
+    public void setEscapePositionX(int escapePositionX) {
+        this.escapePositionX = escapePositionX;
     }
 
-    public int getyPosi() {
-        return yPosi;
+    public int getEscapePositionY() {
+        return escapePositionY;
     }
 
-    public void setyPosi(int yPosi) {
-        this.yPosi = yPosi;
+    public void setEscapePositionY(int escapePositionY) {
+        this.escapePositionY = escapePositionY;
     }
 
     public int getPositionX() {
@@ -108,22 +107,6 @@ public class BlueGhost extends Ghost {
 
     public void setY(int y) {
         this.y = y;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public boolean isEaten() {
-        return eaten;
-    }
-
-    public void setEaten(boolean eaten) {
-        this.eaten = eaten;
     }
 
 

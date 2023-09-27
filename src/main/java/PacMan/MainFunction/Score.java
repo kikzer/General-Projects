@@ -5,11 +5,11 @@ import PacMan.PlayerFunction.Player;
 import java.awt.*;
 
 public class Score {
-    private int score, lives, highscore;
+    private int score, lives, highScore;
 
-    public Score(final int highscore, final Player player) {
+    public Score(final int highScore, final Player player) {
         this.score = 0;
-        this.highscore = highscore;
+        this.highScore = highScore;
         lives = player.getLife();
     }
 
@@ -18,7 +18,7 @@ public class Score {
     }
 
     private void showSHighScore(Graphics g) {
-        g.drawString("High-Score: " + getHighscore(), PacEngine.WIDTH / 2, -8);
+        g.drawString("High-Score: " + getHighScore(), PacEngine.WIDTH / 2, -8);
     }
 
     private void showLife(Graphics g) {
@@ -48,11 +48,11 @@ public class Score {
         this.lives = lives;
     }
 
-    public int getHighscore() {
-        return highscore;
+    public int getHighScore() {
+        return highScore;
     }
 
-    public void setHighscore(int highscore) {
-        this.highscore = highscore;
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
     }
 }

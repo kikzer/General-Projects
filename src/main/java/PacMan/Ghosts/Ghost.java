@@ -12,12 +12,10 @@ public class Ghost extends Body {
     private final PacEngine engine;
     private final AStar aStar;
     private int x, y;
-    private static boolean weak;
 
     public Ghost(final int x, final int y, final PacEngine engine) {
         this.x = x;
         this.y = y;
-        weak = false;
         this.engine = engine;
         this.aStar = new AStar(engine);
     }
@@ -44,14 +42,6 @@ public class Ghost extends Body {
 
     public void setY(int y) {
         this.y = y;
-    }
-
-    public static boolean isWeak() {
-        return !weak;
-    }
-
-    public static void setWeak(boolean weak) {
-        weak = weak;
     }
 
     /**
@@ -110,17 +100,24 @@ public class Ghost extends Body {
         }
     }
 
-    /**
-     * uses Pythagoras to calculate the destination between two points and returns it
-     */
-    public int getDestination(int xStart, int yStart, int xEnd, int yEnd) {
-        return Math.abs(xStart - xEnd) + Math.abs(yStart - yEnd);
+    public boolean inRange(int range){
+        int yDistance = Math.abs(getEngine().getPacman().getY()-(getY()));
+        int xDistance = Math.abs(getEngine().getPacman().getX()-(getX()));
+        return ((int)Math.sqrt(yDistance+xDistance)*25 <= range);
     }
+
 
     /**
      * Checks if the ghost reached pac man and returns a boolean
      */
     public boolean isReachedGoal() {
         return getX() == getEngine().getPacman().getX() && getY() == getEngine().getPacman().getY();
+    }
+
+    /**
+     * Updates the destination of the Ghost, so it is always following Pacman, if the Ghost has caught Pacman
+     */
+    public void update() {
+        getaStar().setNodes(getX(), getY(), getEngine().getPacman().getX(), getEngine().getPacman().getY());
     }
 }

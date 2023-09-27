@@ -3,7 +3,6 @@ package PacMan.MainFunction;
 
 import PacMan.PlayerFunction.Food;
 import PacMan.Ghosts.BlueGhost;
-import PacMan.Ghosts.Ghost;
 import PacMan.Ghosts.OrangeGhost;
 import PacMan.Ghosts.RedGhost;
 import PacMan.PlayerFunction.Player;
@@ -21,7 +20,7 @@ import java.util.Scanner;
 public class PacEngine extends JPanel implements Runnable {
 
     public static final int WIDTH = 575;
-    public static final int HEIGHT = 850;
+    public static final int HEIGHT = 750;
     private final PacField pacField;
     private final Player pacman;
     private final RedGhost redGhost;
@@ -42,7 +41,7 @@ public class PacEngine extends JPanel implements Runnable {
         blueGhost = new BlueGhost(((getField().getMap().length / 2) * Player.WIDTH) - Player.WIDTH * 2, ((getField().getMap().length / 2) * Player.HEIGHT), this);
         score = new Score(0, getPacman());
         try {
-            score.setHighscore(readTxt());
+            score.setHighScore(readTxt());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -68,6 +67,9 @@ public class PacEngine extends JPanel implements Runnable {
         gameThread.start();
     }
 
+    /**
+     * Lets the food be visible on screen
+     */
     private void showFood(Graphics g) {
         for (Food food : getFoodList()) {
             food.draw(g);
@@ -93,6 +95,9 @@ public class PacEngine extends JPanel implements Runnable {
         getOrangeGhost().setY((getField().getMap().length / 2) * Player.HEIGHT);
         getBlueGhost().setX(((getField().getMap().length / 2) * Player.WIDTH) - Player.WIDTH * 2);
         getBlueGhost().setY((getField().getMap().length / 2) * Player.HEIGHT);
+        getRedGhost().update();
+        getOrangeGhost().update();
+        getBlueGhost().update();
     }
 
     /**
@@ -108,21 +113,13 @@ public class PacEngine extends JPanel implements Runnable {
     }
 
     /**
-     * Lets Pacman die
+     * Lets Pacman die and resets Pacman and all Ghosts to the starting position.
      */
     private void playerDeath() {
         getPacman().setLife(getPacman().getLife() - 1);
         getScore().setLives(getPacman().getLife());
         resetGhost();
         resetPlayerPosition();
-    }
-
-    /**
-     * IN CONSTRUCTION NO FUNCTIONS
-     */
-    private void weakMode(){
-        int currentTime = (int) (System.currentTimeMillis()/1000);
-        System.out.println(currentTime);
     }
 
     /**
@@ -139,10 +136,6 @@ public class PacEngine extends JPanel implements Runnable {
                     getFoodList().get(i).getY() > getPacman().getY() &&
                     getFoodList().get(i).getX() + getFoodList().get(i).getWidth() < getPacman().getX() + Player.WIDTH &&
                     getFoodList().get(i).getY() + getFoodList().get(i).getHeight() < getPacman().getY() + Player.HEIGHT) {
-                if(getFoodList().get(i).isSuperfood()){
-                    weakMode();
-                    Ghost.setWeak(true);
-                }
                 getFoodList().remove(getFoodList().get(i));
                 getScore().setScore(getScore().getScore() + 10);
             }
@@ -172,6 +165,10 @@ public class PacEngine extends JPanel implements Runnable {
         g.drawImage(orange, getOrangeGhost().getX(), getOrangeGhost().getY(), getOrangeGhost().getWidth(), getOrangeGhost().getHeight(), null);
     }
 
+    /**
+     * Starts the overall search of the Ghosts and regulates the speed of them.
+     * Over time, it highers the speed so that it's not getting too easy
+     */
     private void search() {
         if (getSpeed() % 4 == 0) {
             setSpeed(getSpeed() + 1);
@@ -203,7 +200,7 @@ public class PacEngine extends JPanel implements Runnable {
             scanner.skip("Highscore: ");
             number = scanner.nextInt();
             if (number < getScore().getScore()) {
-                getScore().setHighscore(getScore().getScore());
+                getScore().setHighScore(getScore().getScore());
 
             }
         }
@@ -214,7 +211,6 @@ public class PacEngine extends JPanel implements Runnable {
         if (getFoodList().isEmpty()) {
             setWin(true);
         } else if (getPacman().getLife() <= 0) {
-            setWin(true);
             setLost(true);
         }
         if (getRedGhost().getX() % 3 == 0) {
@@ -225,11 +221,6 @@ public class PacEngine extends JPanel implements Runnable {
         getOrangeGhost().update();
         getBlueGhost().update();
         search();
-        try {
-            editTxt();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void paint(Graphics g) {
@@ -239,9 +230,13 @@ public class PacEngine extends JPanel implements Runnable {
         g.drawImage(image, 0, 0, this);
     }
 
+    /**
+     * Draws the Game-field, Ghosts, Pacman, the score and the food.
+     * If it's game over or the game has been won, it shows the end screen instead.
+     */
     public void draw(Graphics g) {
         g.translate(25, 25);
-        if (isWin()) {
+        if (isWin() || isLost()) {
             showEnd(g);
         } else {
             getField().draw(g);
@@ -253,6 +248,7 @@ public class PacEngine extends JPanel implements Runnable {
             getScore().draw(g);
             showGhostImage(g);
         }
+        showPath(g);
     }
 
     private void showPath(Graphics g) {
@@ -261,6 +257,23 @@ public class PacEngine extends JPanel implements Runnable {
         getOrangeGhost().getaStar().draw(g);
     }
 
+    private void createGame(){
+        new PacEngine();
+        setWin(false);
+        setLost(false);
+        resetGhost();
+        resetPlayerPosition();
+        getScore().setScore(0);
+        getPacman().setLife(3);
+        getScore().setLives(getPacman().getLife());
+
+    }
+
+    /**
+     * Shows the end screen, and if the player lost or won the game.
+     * In addition, it gives information about the Score
+     * and the chance of playing again
+     */
     private void showEnd(Graphics g) {
         g.setColor(Color.black);
         g.fillRect(0, 0, getWidth(), getHeight());
@@ -277,6 +290,7 @@ public class PacEngine extends JPanel implements Runnable {
     @Override
     public void run() {
         while (true) {
+
             if (!isWin() || !isLost()) {
                 update();
                 checkCollision();
@@ -296,52 +310,21 @@ public class PacEngine extends JPanel implements Runnable {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_DOWN -> {
-                    getPacman().setDown(true);
-                    getPacman().setUp(false);
-                    getPacman().setRight(false);
-                    getPacman().setLeft(false);
+                    getPacman().goDown();
                 }
                 case KeyEvent.VK_UP -> {
-                    getPacman().setDown(false);
-                    getPacman().setUp(true);
-                    getPacman().setRight(false);
-                    getPacman().setLeft(false);
+                    getPacman().goUp();
                 }
                 case KeyEvent.VK_LEFT -> {
-                    getPacman().setDown(false);
-                    getPacman().setUp(false);
-                    getPacman().setRight(false);
-                    getPacman().setLeft(true);
+                    getPacman().goLeft();
                 }
                 case KeyEvent.VK_RIGHT -> {
-                    getPacman().setDown(false);
-                    getPacman().setUp(false);
-                    getPacman().setRight(true);
-                    getPacman().setLeft(false);
+                    getPacman().goRight();
                 }
                 case KeyEvent.VK_D -> setWin(true);
                 case KeyEvent.VK_SPACE -> {
-                    if (win) {
-                        new PacEngine();
-                        setWin(false);
-                        setLost(false);
-                        resetGhost();
-                        resetPlayerPosition();
-                        getScore().setScore(0);
-                        getPacman().setLife(3);
-                        getScore().setLives(getPacman().getLife());
-                        for (int i = 0; i < getField().getMap().length; i++) {
-                            for (int j = 0; j < getField().getMap()[0].length; j++) {
-                                if (getField().getMap()[i][j] == 2) {
-                                    if ((i == 1 && j == 4) || (i == PacField.map.length - 4 && j == 4) || (i == 1 && j == PacField.map.length - 6) ||
-                                            (i == PacField.map.length - 4 && j == PacField.map.length - 6)) {
-                                        getFoodList().add(new Food(j * Player.WIDTH, i * Player.HEIGHT, true));
-                                    } else {
-                                        getFoodList().add(new Food(j * Player.WIDTH, i * Player.HEIGHT, false));
-                                    }
-                                }
-                            }
-                        }
+                    if (isWin() || isLost()) {
+                        createGame();
                     }
                 }
             }
@@ -354,10 +337,6 @@ public class PacEngine extends JPanel implements Runnable {
 
     public void setLost(boolean lost) {
         this.lost = lost;
-    }
-
-    public PacField getPacField() {
-        return pacField;
     }
 
     public boolean isMoveGhost() {
