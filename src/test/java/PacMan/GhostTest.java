@@ -23,7 +23,7 @@ public class GhostTest {
         }
     }
     @Test
-    public void GhostTestInRadius(){
+    public void ghostTestInRadius(){
         PacEngine engine = new PacEngine();
         engine.getPacman().setY(8*Player.HEIGHT);
         engine.getPacman().setX(9*Player.HEIGHT);
@@ -36,7 +36,7 @@ public class GhostTest {
     }
 
     @Test
-    public void GhostTestOutRadius(){
+    public void ghostTestOutRadius(){
         PacEngine engine = new PacEngine();
         engine.getOrangeGhost().update();
         engine.getBlueGhost().update();
@@ -44,5 +44,50 @@ public class GhostTest {
         Assert.assertNotEquals(engine.getBlueGhost().getaStar().getEnd().getX(), engine.getPacman().getX());
         Assert.assertNotEquals(engine.getOrangeGhost().getaStar().getEnd().getY(), engine.getPacman().getY());
         Assert.assertNotEquals(engine.getBlueGhost().getaStar().getEnd().getY(), engine.getPacman().getY());
+    }
+    @Test
+    public void inRangeTest(){
+        PacEngine engine = new PacEngine();
+
+        Assert.assertTrue(engine.getOrangeGhost().inRange(10000));
+        Assert.assertTrue(engine.getBlueGhost().inRange(10000));
+        Assert.assertFalse(engine.getOrangeGhost().inRange(2));
+        Assert.assertFalse(engine.getBlueGhost().inRange(2));
+        engine.getPacman().setY(15*25);
+        engine.getPacman().setX(14*25);
+        engine.getBlueGhost().update();
+        engine.getOrangeGhost().update();
+        Assert.assertFalse(engine.getOrangeGhost().inRange(engine.getOrangeGhost().getRadius()));
+        Assert.assertTrue(engine.getBlueGhost().inRange(engine.getBlueGhost().getRadius()));
+        engine.getPacman().setY(17*25);
+        engine.getPacman().setX(11*25);
+        engine.getBlueGhost().update();
+        engine.getOrangeGhost().update();
+        Assert.assertFalse(engine.getOrangeGhost().inRange(engine.getOrangeGhost().getRadius()));
+        Assert.assertTrue(engine.getBlueGhost().inRange(engine.getBlueGhost().getRadius()));
+        engine.getPacman().setY(12*25);
+        engine.getPacman().setX(13*25);
+        engine.getBlueGhost().update();
+        engine.getOrangeGhost().update();
+        Assert.assertTrue(engine.getOrangeGhost().inRange(engine.getOrangeGhost().getRadius()));
+        Assert.assertTrue(engine.getBlueGhost().inRange(engine.getBlueGhost().getRadius()));
+    }
+
+    @Test
+    public void moveFunctionTest(){
+        PacEngine engine = new PacEngine();
+        engine.getOrangeGhost().update();
+        engine.getRedGhost().update();
+        engine.getBlueGhost().update();
+        int originalSizeOrange = engine.getOrangeGhost().getaStar().getPathList().size();
+        int originalSizeBlue = engine.getBlueGhost().getaStar().getPathList().size();
+        int originalSizeRed = engine.getRedGhost().getaStar().getPathList().size();
+        engine.getOrangeGhost().search();
+        engine.getRedGhost().search();
+        engine.getBlueGhost().search();
+
+        Assert.assertNotEquals(originalSizeBlue, engine.getOrangeGhost().getaStar().getPathList().size());
+        Assert.assertNotEquals(originalSizeOrange, engine.getOrangeGhost().getaStar().getPathList().size());
+        Assert.assertNotEquals(originalSizeRed, engine.getOrangeGhost().getaStar().getPathList().size());
     }
 }
