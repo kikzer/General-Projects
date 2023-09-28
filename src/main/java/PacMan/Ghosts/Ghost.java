@@ -1,6 +1,6 @@
 package PacMan.Ghosts;
 
-import PacMan.Body;
+import PacMan.MainFunction.Body;
 import PacMan.MainFunction.PacEngine;
 import PacMan.PlayerFunction.Player;
 

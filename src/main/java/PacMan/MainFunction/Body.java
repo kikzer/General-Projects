@@ -1,4 +1,4 @@
-package PacMan;
+package PacMan.MainFunction;
 
 import java.awt.*;
 

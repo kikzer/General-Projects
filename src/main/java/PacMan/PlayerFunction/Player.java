@@ -1,7 +1,7 @@
 package PacMan.PlayerFunction;
 
 
-import PacMan.Body;
+import PacMan.MainFunction.Body;
 import PacMan.MainFunction.PacEngine;
 import PacMan.MainFunction.PacField;
 
@@ -15,7 +15,6 @@ public class Player extends Body {
     private boolean right = false;
     private boolean up = false;
     private boolean down = false;
-    private int stepCounter = 0;
 
     public Player(final int x, final int y, final int life) {
         this.x = x;
@@ -45,10 +44,6 @@ public class Player extends Body {
 
     public void setLife(int life) {
         this.life = life;
-    }
-
-    public int getDistance(int x, int y) {
-        return Math.abs(getX() - x) + Math.abs(getY() - y);
     }
 
     @Override

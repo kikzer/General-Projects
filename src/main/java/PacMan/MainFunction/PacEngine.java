@@ -248,7 +248,6 @@ public class PacEngine extends JPanel implements Runnable {
             getScore().draw(g);
             showGhostImage(g);
         }
-        showPath(g);
     }
 
     private void showPath(Graphics g) {
