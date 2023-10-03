@@ -78,20 +78,17 @@ public class GhostTest {
     @Test
     public void moveFunctionTest() {
         PacEngine engine = new PacEngine();
-        engine.getOrangeGhost().update();
-        engine.getRedGhost().update();
-        engine.getBlueGhost().update();
         int originalSizeOrange = engine.getOrangeGhost().getaStar().getPathList().size();
         int originalSizeBlue = engine.getBlueGhost().getaStar().getPathList().size();
         int originalSizeRed = engine.getRedGhost().getaStar().getPathList().size();
 
 
-            engine.getOrangeGhost().update();
-            engine.getRedGhost().update();
-            engine.getBlueGhost().update();
-            engine.getOrangeGhost().search();
-            engine.getRedGhost().search();
-            engine.getBlueGhost().search();
+        engine.getOrangeGhost().update();
+        engine.getRedGhost().update();
+        engine.getBlueGhost().update();
+        engine.getRedGhost().search();
+        engine.getOrangeGhost().search();
+        engine.getBlueGhost().search();
 
 
         Assert.assertNotEquals(originalSizeOrange, engine.getOrangeGhost().getaStar().getPathList().size());
