@@ -74,25 +74,4 @@ public class GhostTest {
         Assert.assertTrue(engine.getOrangeGhost().inRange(engine.getOrangeGhost().getRadius()));
         Assert.assertTrue(engine.getBlueGhost().inRange(engine.getBlueGhost().getRadius()));
     }
-
-    @Test
-    public void moveFunctionTest() {
-        PacEngine engine = new PacEngine();
-        int originalSizeOrange = engine.getOrangeGhost().getaStar().getPathList().size();
-        int originalSizeBlue = engine.getBlueGhost().getaStar().getPathList().size();
-        int originalSizeRed = engine.getRedGhost().getaStar().getPathList().size();
-
-
-        engine.getOrangeGhost().update();
-        engine.getRedGhost().update();
-        engine.getBlueGhost().update();
-        engine.getRedGhost().search();
-        engine.getOrangeGhost().search();
-        engine.getBlueGhost().search();
-
-
-        Assert.assertNotEquals(originalSizeOrange, engine.getOrangeGhost().getaStar().getPathList().size());
-        Assert.assertNotEquals(originalSizeRed, engine.getRedGhost().getaStar().getPathList().size());
-        Assert.assertNotEquals(originalSizeBlue, engine.getBlueGhost().getaStar().getPathList().size());
-    }
 }

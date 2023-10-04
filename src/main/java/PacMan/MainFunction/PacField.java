@@ -34,6 +34,9 @@ public class PacField {
         return map;
     }
 
+    /**
+     * Draws the Map of Pacman with the designated width and height of Pacman for each Tile
+     */
     public void draw(Graphics g) {
         for (int i = 0; i < getMap().length; i++) {
             for (int j = 0; j < getMap()[0].length; j++) {

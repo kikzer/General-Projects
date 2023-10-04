@@ -105,7 +105,8 @@ public class AStar {
     }
 
     /**
-     * Safes all the Tiles on the map, so it can be used with a star algorithm
+     * Safes all the Tiles on the map, so it can be used with a star algorithm and blocks the ones
+     * where ghosts are on. Also setting the start and end node
      */
     public void setNodes(int startX, int startY, int endX, int endY) {
         reset();
@@ -225,11 +226,10 @@ public class AStar {
             }
         }
     }
-    public void showSame(Graphics g, int i){
-        g.setColor(Color.red);
-        g.drawRect(getPathList().get(i).getX() + 1, getPathList().get(i).getY() + 1, Player.WIDTH - 2, Player.HEIGHT - 2);
-    }
 
+    /**
+     * Draws the Path of the AStar
+     */
     public void draw(Graphics g) {
         if (!getPathList().isEmpty())
             for (Node nodes : getPathList()) {
@@ -238,36 +238,40 @@ public class AStar {
             }
     }
 
-    public void showNodes(Graphics g) {
-        for (Node[] node : getNodes()) {
-            for (int j = 0; j < getNodes().length; j++) {
-                g.drawRect(node[j].getX(), node[j].getY(), Player.WIDTH, Player.HEIGHT);
-            }
-        }
-    }
-
-    public void showBlocked(Graphics g) {
-        for (Node[] node : getNodes()) {
-            for (int j = 0; j < getNodes().length; j++) {
-                if (node[j].isBlocked())
-                    g.drawRect(node[j].getX(), node[j].getY(), Player.WIDTH, Player.HEIGHT);
-            }
-        }
-    }
-
+    /**
+     * Calculates the FCost for the current Node
+     * @param current Node which is currently the point where the algorithm is
+     * @return the GCost plus the HCost
+     */
     private int getFCost(Node current) {
         return current.getCostG() + current.getCostH();
     }
 
+    /**
+     * Calculates the GCost for the current Node with pythagoras
+     * @param start Node where the algorithm started
+     * @param current Node which is currently the point where the algorithm is
+     * @return the GCost of the Node
+     */
     private int getGCost(Node start, Node current) {
-        return Math.abs(start.getX() - current.getX()) + Math.abs(start.getY() - current.getY());
+        return (int)Math.sqrt(Math.abs(start.getX() - current.getX()) + Math.abs(start.getY() - current.getY()));
     }
 
+    /**
+     * Calculates the HCost for the current Node with pythagoras
+     * @param end Node where the algorithm ends
+     * @param current Node which is currently the point where the algorithm is
+     * @return the HCost of the Node
+     */
     private int getHCost(Node end, Node current) {
-        return Math.abs(end.getX() - current.getX()) + Math.abs(end.getY() - current.getY());
+        return (int) Math.sqrt(Math.abs(end.getX() - current.getX()) + Math.abs(end.getY() - current.getY()));
     }
 
 
+    /**
+     * This Class represents one Tile on the Map which is being used for the AStar Algorithm to determine which
+     * is the better way to reach the destination
+     */
     public static class Node {
         private int costH = 0;
         private int costF = 0;

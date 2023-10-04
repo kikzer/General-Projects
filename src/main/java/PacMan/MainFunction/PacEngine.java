@@ -11,10 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class PacEngine extends JPanel implements Runnable {
 
@@ -38,12 +35,7 @@ public class PacEngine extends JPanel implements Runnable {
         redGhost = new RedGhost((getField().getMap().length / 2) * Player.WIDTH, (getField().getMap().length / 2) * Player.HEIGHT, this);
         orangeGhost = new OrangeGhost(((getField().getMap().length / 2) * Player.WIDTH) - Player.WIDTH, (getField().getMap().length / 2) * Player.HEIGHT, this);
         blueGhost = new BlueGhost(((getField().getMap().length / 2) * Player.WIDTH) - Player.WIDTH * 2, ((getField().getMap().length / 2) * Player.HEIGHT), this);
-        score = new Score(0, getPacman());
-        try {
-            score.setHighScore(readTxt());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        score = new Score(getPacman());
         for (int i = 0; i < getField().getMap().length; i++) {
             for (int j = 0; j < getField().getMap()[0].length; j++) {
                 if (getField().getMap()[i][j] == 2) {
@@ -122,7 +114,8 @@ public class PacEngine extends JPanel implements Runnable {
     }
 
     /**
-     * Checks if a ghost collided with pacman
+     * First of all, it checks if one of the ghost reached Pacman. Then it checks if Pacman is on a Food tile
+     * if he is on one it gets removed and added to the score.
      */
     private void checkCollision() {
         if (getRedGhost().isReachedGoal() || getOrangeGhost().isReachedGoal() || getBlueGhost().isReachedGoal()) {
@@ -139,25 +132,15 @@ public class PacEngine extends JPanel implements Runnable {
                 getScore().setScore(getScore().getScore() + 10);
             }
         }
-        checkGhostCollision();
     }
 
-    private void checkGhostCollision() {
-        if (!getRedGhost().getaStar().getClosedList().isEmpty() && !getOrangeGhost().getaStar().getClosedList().isEmpty())
-            for (int i = 0; i < getField().getMap().length; i++) {
-                for (int j = 0; j < getField().getMap().length; j++) {
-                    if (getRedGhost().getaStar().getClosedList().contains(getRedGhost().getaStar().getNodes()[i][j]) == getOrangeGhost().getaStar().getClosedList().contains(getOrangeGhost().getaStar().getNodes()[i][j])) {
-                        getRedGhost().getaStar().getNodes()[i][j].setBlocked(true);
-                    }
-                }
-            }
-    }
-
+    /**
+     *Is adding ghost images to the ghost, so that there arnt only squares as ghosts.
+     */
     private void showGhostImage(Graphics g) {
         Image red = new ImageIcon("C:\\Users\\Niklas\\OneDrive\\Eigene Projekte\\GAMES\\Ghost\\redGhost.png").getImage();
         Image orange = new ImageIcon("C:\\Users\\Niklas\\OneDrive\\Eigene Projekte\\GAMES\\Ghost\\orangeGhost.png").getImage();
         Image blue = new ImageIcon("C:\\Users\\Niklas\\OneDrive\\Eigene Projekte\\GAMES\\Ghost\\blueGhost.png").getImage();
-        //Image pac = new ImageIcon("C:\\Users\\Niklas\\OneDrive\\Eigene Projekte\\GAMES\\Ghost\\pacman.gif").getImage();
 
         g.drawImage(red, getRedGhost().getX(), getRedGhost().getY(), getRedGhost().getWidth(), getRedGhost().getHeight(), null);
         g.drawImage(blue, getBlueGhost().getX(), getBlueGhost().getY(), getBlueGhost().getWidth(), getBlueGhost().getHeight(), null);
@@ -180,32 +163,11 @@ public class PacEngine extends JPanel implements Runnable {
         setSpeed(getSpeed() + 1);
     }
 
-    private int readTxt() throws FileNotFoundException {
-        File file = new File("C:\\Users\\Niklas\\OneDrive\\Eigene Projekte\\GAMES\\highscore.txt");
-        Scanner scanner = new Scanner(file);
-        int number = 0;
-        while (scanner.hasNextLine()) {
-            scanner.skip("Highscore: ");
-            number = scanner.nextInt();
-        }
-        return number;
-    }
-
-    private void editTxt() throws FileNotFoundException {
-        File file = new File("C:\\Users\\Niklas\\OneDrive\\Eigene Projekte\\GAMES\\highscore.txt");
-        Scanner scanner = new Scanner(file);
-        int number;
-        while (scanner.hasNextLine()) {
-            scanner.skip("Highscore: ");
-            number = scanner.nextInt();
-            if (number < getScore().getScore()) {
-                getScore().setHighScore(getScore().getScore());
-
-            }
-        }
-    }
-
-
+    /**
+     * Updates the Targets of the Ghost and regulates when the first Ghost starts.
+     * It also checks the winning/ losing condition
+     * (if all food is eaten or a Ghost has reached Pacman)
+      */
     private void update() {
         if (getFoodList().isEmpty()) {
             setWin(true);
@@ -249,13 +211,19 @@ public class PacEngine extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * Reveals the path of the Ghost to their destination
+     */
     private void showPath(Graphics g) {
         getRedGhost().getaStar().draw(g);
         getBlueGhost().getaStar().draw(g);
         getOrangeGhost().getaStar().draw(g);
     }
 
-    private void createGame(){
+    /**
+     * Resets the current game to the starting position
+     */
+    private void resetGame(){
         new PacEngine();
         setWin(false);
         setLost(false);
@@ -285,6 +253,9 @@ public class PacEngine extends JPanel implements Runnable {
         g.drawString("Your Score: " + getScore().getScore(), 215, (getHeight() / 4) + 100);
     }
 
+    /**
+     * Lets the whole game run, so it can be played
+     */
     @Override
     public void run() {
         while (true) {
@@ -304,6 +275,9 @@ public class PacEngine extends JPanel implements Runnable {
     }
 
 
+    /**
+     * This Class manages the Key inputs for Pacman and the restart after losing or winning the game
+     */
     public class KeyFunction extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
@@ -322,7 +296,7 @@ public class PacEngine extends JPanel implements Runnable {
                 case KeyEvent.VK_D -> setWin(true);
                 case KeyEvent.VK_SPACE -> {
                     if (isWin() || isLost()) {
-                        createGame();
+                        resetGame();
                     }
                 }
             }

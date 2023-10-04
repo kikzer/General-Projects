@@ -46,6 +46,10 @@ public class Player extends Body {
         this.life = life;
     }
 
+    /**
+     * Lets the player move on the horizontal and vertical line if the front isn't blocked.
+     * The player only moves if one of the arrow keys has been used otherwise it doesn't
+     */
     @Override
     public void move() {
         if (right && !left && !up && !down && getX() < PacEngine.WIDTH - WIDTH * 3 && frontIsBlocked()) {
@@ -71,6 +75,10 @@ public class Player extends Body {
 
     }
 
+    /**
+     * Checks if there is a Wall in front of the Player
+     * @return true or false if there is one in front
+     */
     public boolean frontIsBlocked() {
         if ((PacField.map[(getY() / HEIGHT) + 1][getX() / WIDTH] == 1 || PacField.map[(y / HEIGHT) + 1][getX() / WIDTH] == 3) && isDown()) {
             return false;
@@ -81,30 +89,47 @@ public class Player extends Body {
         } else return PacField.map[(getY() / HEIGHT)][(getX() / WIDTH) - 1] != 1 || !isLeft();
     }
 
+    /**
+     * Draws Pacman
+     */
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.yellow);
         g.fillRect(getX(), getY(), WIDTH, HEIGHT);
     }
 
+    /**
+     * Lets the Player go left
+     */
     public void goLeft(){
         setDown(false);
         setUp(false);
         setRight(false);
         setLeft(true);
     }
+    /**
+     * Lets the Player go right
+     */
     public void goRight(){
         setDown(false);
         setUp(false);
         setRight(true);
         setLeft(false);
     }
+
+    /**
+     * Lets the Player go up
+     */
     public void goUp(){
         setDown(false);
         setUp(true);
         setRight(false);
         setLeft(false);
     }
+
+    /**
+     * Lets the Player go down
+     */
     public void goDown(){
         setDown(true);
         setUp(false);

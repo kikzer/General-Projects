@@ -88,11 +88,17 @@ public class Ghost extends Body {
         return Player.HEIGHT;
     }
 
+    /**
+     * Draws the ghost
+     */
     @Override
     public void draw(Graphics g) {
         g.fillRect(getX(), getY(), getWidth(), getHeight());
     }
 
+    /**
+     * Starts the search of the ghost for a star and lets it move
+     */
     public void search() {
         getaStar().search();
         if (!getaStar().getPathList().isEmpty()) {
@@ -100,6 +106,11 @@ public class Ghost extends Body {
         }
     }
 
+    /**
+     * Calculates the distance between the ghost and Pacman
+     * @param range the range of the ghost where it hunts Pacman
+     * @return true or false if Pacman is in range
+     */
     public boolean inRange(int range){
         int yDistance = Math.abs(getEngine().getPacman().getY()-(getY()));
         int xDistance = Math.abs(getEngine().getPacman().getX()-(getX()));

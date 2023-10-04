@@ -15,6 +15,9 @@ public class RedGhost extends Ghost {
         this.y = y;
     }
 
+    /**
+     * Draws the RedGhost
+     */
     public void draw(Graphics g) {
         g.setColor(Color.red);
         super.draw(g);
