@@ -3,6 +3,9 @@ package PacMan.MainFunction;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * This class creates the Frame for the Game Pacman
+ */
 public class PacFrame extends JFrame {
 
     public PacFrame(){

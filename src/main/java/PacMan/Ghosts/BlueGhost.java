@@ -7,6 +7,9 @@ import PacMan.PlayerFunction.Player;
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * This class represents the blue Ghost, which is following Pacman if it is in Range
+ */
 public class BlueGhost extends Ghost {
 
     private int x, y, escapePositionX, escapePositionY, positionX, positionY;

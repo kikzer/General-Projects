@@ -146,8 +146,8 @@ public class AStar {
     }
 
     /**
-     * checks if there is a wall or a ghost is in the way
-     * @return returns a boolean if there is something in the way
+     * checks if the algorithm has reached Pacman
+     * @return returns a boolean if it reached Pacman
      */
     private boolean checkCollision(){
         if (getCurrent().getX() >= getEnd().getX() &&
@@ -258,7 +258,7 @@ public class AStar {
     }
 
     /**
-     * Calculates the HCost for the current Node with pythagoras
+     * Calculates the HCost for the current Node with pythagoras (Euclidean Distance Heuristic)
      * @param end Node where the algorithm ends
      * @param current Node which is currently the point where the algorithm is
      * @return the HCost of the Node

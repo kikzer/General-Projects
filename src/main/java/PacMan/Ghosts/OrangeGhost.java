@@ -6,14 +6,16 @@ import PacMan.PlayerFunction.Player;
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-
+/**
+ * This class represents the orange Ghost, which is following Pacman if it is in Range
+ */
 public class OrangeGhost extends Ghost {
 
     private int x, y;
-    int positionX;
-    int positionY;
-    int ghostPositionX;
-    int ghostPositionY;
+    private int positionX;
+    private int positionY;
+    private int ghostPositionX;
+    private int ghostPositionY;
 
 
     public OrangeGhost(final int x, final int y, final PacEngine engine) {

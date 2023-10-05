@@ -4,6 +4,9 @@ import PacMan.MainFunction.PacField;
 
 import java.awt.*;
 
+/**
+ * This class represents the Food and which size it has
+ */
 public class Food {
     private final int x, y;
     private final int width, height;

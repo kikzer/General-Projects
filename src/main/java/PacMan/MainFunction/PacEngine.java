@@ -13,6 +13,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+/**
+ * Creates the Game and its Functions for Pacman
+ */
 public class PacEngine extends JPanel implements Runnable {
 
     public static final int WIDTH = 575;
@@ -36,6 +39,21 @@ public class PacEngine extends JPanel implements Runnable {
         orangeGhost = new OrangeGhost(((getField().getMap().length / 2) * Player.WIDTH) - Player.WIDTH, (getField().getMap().length / 2) * Player.HEIGHT, this);
         blueGhost = new BlueGhost(((getField().getMap().length / 2) * Player.WIDTH) - Player.WIDTH * 2, ((getField().getMap().length / 2) * Player.HEIGHT), this);
         score = new Score(getPacman());
+        createFood();
+
+        this.setBackground(Color.black);
+        Dimension dimension = new Dimension(WIDTH, HEIGHT);
+        this.setFocusable(true);
+        this.addKeyListener(new KeyFunction());
+        this.setPreferredSize(dimension);
+        Thread gameThread = new Thread(this);
+        gameThread.start();
+    }
+
+    /**
+     * Creates all the Food on the Map. Lets it only Spawn on Tiles where it has been marked by a 2
+     */
+    private void createFood(){
         for (int i = 0; i < getField().getMap().length; i++) {
             for (int j = 0; j < getField().getMap()[0].length; j++) {
                 if (getField().getMap()[i][j] == 2) {
@@ -48,14 +66,6 @@ public class PacEngine extends JPanel implements Runnable {
                 }
             }
         }
-
-        this.setBackground(Color.black);
-        Dimension dimension = new Dimension(WIDTH, HEIGHT);
-        this.setFocusable(true);
-        this.addKeyListener(new KeyFunction());
-        this.setPreferredSize(dimension);
-        Thread gameThread = new Thread(this);
-        gameThread.start();
     }
 
     /**

@@ -7,6 +7,10 @@ import PacMan.MainFunction.PacField;
 
 import java.awt.*;
 
+/**
+ * This class represents the Player/Pacman and gives it the ability to move
+ */
+
 public class Player extends Body {
     private int x, y, life;
     public static final int WIDTH = 25;

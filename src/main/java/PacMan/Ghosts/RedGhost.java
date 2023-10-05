@@ -5,6 +5,9 @@ import PacMan.PlayerFunction.Player;
 
 import java.awt.*;
 
+/**
+ * This class represents the red Ghost, which is only following Pacman
+ */
 public class RedGhost extends Ghost {
 
     private int x, y;

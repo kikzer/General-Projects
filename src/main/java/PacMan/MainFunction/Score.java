@@ -4,6 +4,9 @@ import PacMan.PlayerFunction.Player;
 
 import java.awt.*;
 
+/**
+ * This class represents the Score, which is showing life and points of Pacman
+ */
 public class Score {
     private int score, lives;
 

@@ -6,7 +6,9 @@ import PacMan.PlayerFunction.Player;
 
 import java.awt.*;
 
-
+/**
+ * This class represents the Ghosts general Functions, which they all have in common
+ */
 public class Ghost extends Body {
 
     private final PacEngine engine;
